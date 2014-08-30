@@ -17,9 +17,11 @@
     "url": "https://github.com/blogmv/backbone-browserify/issues"
   },
   "homepage": "https://github.com/blogmv/backbone-browserify",
-  "dependencies": {
+  
+  "devDependencies": {
     "backbone": "^1.1.2",
     "jquery": "^2.1.1",
-    "underscore": "^1.7.0"
+    "underscore": "^1.7.0",
+    "browserify": "^5.11.0"
   }
 }
