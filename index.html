@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Backbone + Browserify</title>
+        <link rel="stylesheet" href="assets/vendor/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/component.css">
+    </head>
+    <body>
+        <header class="header">
+            <div class="container">
+                <div class="col-md-12">
+                    <h1>blogMV*</h1>
+                </div>
+            </div>
+        </header>
+
+        <div class="jumbotron">
+            <div class="container">
+                <h1>Backbone + Browserify</h1>
+                <p>This is an example of the Single Page App built with Backbone and Browserify.</p>
+            </div>
+        </div>
+
+        <section class="container main">
+            <div class="row">
+                <div class="col-md-3">
+                    <h2>JS News</h2>
+
+                    <ul class="list-group">
+                         <script type="text/html" id="tmp-article-list">
+                            <% collection.each(function(model){ %>
+                                <li>
+                                    <a href="article/<%= model.id %>" class="list-group-item">
+                                        <%= model.getTitle() %>
+                                    </a>
+                                </li>
+                            <% }); %>
+                        </script>
+                    </ul>
+                </div><!--col-md-3-->
+
+                <section class="col-md-9">
+                    <article>
+                       <script type="text/html" id="tmp-article-content">
+                            <h2><%= activeModel.getTitle() %></h2>
+                            <p><%= activeModel.getContent() %></p>
+                        </script>
+                    </article>
+
+                    <h2>Discussion</h2>
+
+                    <ul class="discussion">
+                        <script type="text/html" id="tmp-article-comments">
+                            <% collection.each(function(model){ %>
+                                <li>
+                                    <b><%= model.getAuthorName() %></b>
+                                    <p><%= model.getContent() %></p>
+                                </li>
+                            <% }); %>
+                        </script>
+                    </ul>
+                </section><!--col-md-9-->
+            </div>
+        </section><!-- container -->
+
+        <section class="row comments">
+            <div class="col-md-12">
+                <h3>Write a comment</h3>
+
+                <form>
+                    <span class="col-md-6">
+                        <input type="text" id="name" class="form-control input-lg" placeholder="Name">
+                    </span>
+
+                    <span class="col-md-6">
+                        <input type="email" id="email" class="form-control input-lg" placeholder="Email">
+                    </span>
+
+                    <span class="col-md-12">
+                        <textarea id="msg" class="form-control input-lg" placeholder="Comment"></textarea>
+                        <button class="btn btn-lg btn-alert btn-block" type="submit">Post comment</button>
+                    </span>
+                </form>
+            </div>
+        </section>
+        <script type="text/javascript" src="assets/js/bundle.js"></script>
+        <footer id="footer">
+            <p>
+                Made with ❤ by a bunch of geeks from the island of magic |
+                <a href="https://twitter.com/zigolis">@zigolis</a>
+                <a href="https://twitter.com/fjorgemota">@fjorgemota</a>
+                <a href="https://twitter.com/chiefgui">@chiefgui</a>
+                <a href="https://twitter.com/rcarvalhojs">@rcarvalhojs</a>
+            </p>
+        </footer>
+    </body>
+</html>

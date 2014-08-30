@@ -1,0 +1,28 @@
+{
+  "name": "Backbone-Browserify",
+  "version": "0.0.1",
+  "description": "This is a SPA application made using backbone and browserify",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/blogmv/backbone-browserify.git"
+  },
+  "keywords": [
+    "Backbone",
+    "Browserify"
+  ],
+  "author": "Renan Carvalho",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/blogmv/backbone-browserify/issues"
+  },
+  "homepage": "https://github.com/blogmv/backbone-browserify",
+  "dependencies": {
+    "backbone": "^1.1.2",
+    "jquery": "^2.1.1",
+    "underscore": "^1.7.0"
+  }
+}

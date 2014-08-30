@@ -1,0 +1,25 @@
+{
+  "name": "backbone-browserify",
+  "version": "0.0.1",
+  "authors": [
+    "Renan Carvalho <renansscarvalho@gmail.com>"
+  ],
+  "description": "Projeto feito com backbone usando browserify",
+  "main": "index.html",
+  "keywords": [
+    "Backbone",
+    "Browserify"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+   "bootstrap": "~3.2.0",
+   "jquery": "2.x"
+  }
+}

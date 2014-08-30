@@ -1,4 +1,6 @@
-backbone-browserify
-===================
+blogMV* Skeleton
+================
 
-This is a SPA application made using backbone and browserify
+This is the skeleton which we are gonna use to build our SPA with Backbone and
+other technologies through an API built with Python using Google App Engine to
+host blogMV* data.
