@@ -2,12 +2,9 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-
-        <title>Backbone + Browserify</title>
+        <title>Backbone + RequireJS</title>
         <link rel="stylesheet" href="assets/vendor/bootstrap/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="assets/css/component.css">
-        <link href='//fonts.googleapis.com/css?family=PT+Sans:400,700|Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
-
     </head>
     <body>
         <header class="header">
@@ -20,10 +17,8 @@
 
         <div class="jumbotron">
             <div class="container">
-
-                <h1>Backbone + Browserify</h1>
-                <p>This is an example of the Single Page App built with Backbone and Browserify.</p>
-
+                <h1>Backbone + Require</h1>
+                <p>This is an example of the Single Page App built with Backbone and RequireJS.</p>
             </div>
         </div>
 
@@ -31,8 +26,8 @@
             <div class="row">
                 <div class="col-md-3">
                     <h2>JS News</h2>
-                     <ul class="list-group">
-                         <script type="text/html" id="tmp-article-list">
+                    <ul class="list-group">
+                     <script type="text/html" id="tmp-article-list">
                             <% collection.each(function(model){ %>
                                 <li>
                                     <a href="article/<%= model.id %>" class="list-group-item">
@@ -46,8 +41,7 @@
 
                 <section class="col-md-9">
                     <article>
-
-                       <script type="text/html" id="tmp-article-content">
+                        <script type="text/html" id="tmp-article-content">
                             <h2><%= activeModel.getTitle() %></h2>
                             <p><%= activeModel.getContent() %></p>
                         </script>
@@ -56,7 +50,6 @@
                     <h2>Discussion</h2>
 
                     <ul class="discussion">
-
                         <script type="text/html" id="tmp-article-comments">
                             <% collection.each(function(model){ %>
                                 <li>
@@ -91,10 +84,6 @@
             </div>
         </section>
 
-        <script type="text/javascript" src="assets/js/bundle.js"></script>
-
-
-
         <footer id="footer">
             <p>
                 Made with ❤ by a bunch of geeks from the island of magic |
@@ -104,5 +93,12 @@
                 <a href="https://twitter.com/rcarvalhojs">@rcarvalhojs</a>
             </p>
         </footer>
+
+        <script type="text/javascript" src="assets/js/bundle.js"></script>
     </body>
 </html>
+
+
+
+
+ 

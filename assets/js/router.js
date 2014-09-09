@@ -8,17 +8,17 @@ Backbone.$ = $
 
 module.exports = Backbone.Router.extend({
 	routes: {
-		"":"home"   
+		"":"renderHome"   
 	},
 
-	home: function() {     
+	renderHome: function() {     
 		activeModel = new ActiveModel();
-		app = new App({el : $("#tmp-article-list"),model : activeModel});
-		appContent = new ArticleContent({el : $(".main"),model : activeModel});
-		appComment = new ArticleComment({el : $(".discussion"),model : activeModel});
+		app = new App({el : $(".main"), model : activeModel});
+		appContent = new ArticleContent({el : $(".main"), model : activeModel});
+		appComment = new ArticleComment({el : $(".discussion"), model : activeModel});
 	},
 
-	start:function(){
+	startApp:function(){
 		Backbone.history.start();
 	}
 });

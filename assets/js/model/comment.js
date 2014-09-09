@@ -12,5 +12,5 @@ module.exports =  Backbone.Model.extend({
 
 	getContent: function() {
 		return this.get('content');
-	}
+	}	
 });
