@@ -2,9 +2,10 @@ var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
 var CommentModel = require("../model/comment");
+var Template = require("./templates/commentForm.hbs");
+
 
 module.exports = Backbone.View.extend({
-	template: _.template( $('#comments').html()),
 	
 	events:{
 		"click #postComment":"postComment",
@@ -18,7 +19,8 @@ module.exports = Backbone.View.extend({
 		this.render();
 	},
 	render: function() {
-		this.$el.html(this.template());
+		debugger;
+		this.$el.html(Template());
 	},
 	setArticleId:function(id) {
 		this.model.setArticleId(id);
