@@ -1,11 +1,10 @@
 var Backbone = require('backbone');
 var $ = require('jquery');
 var _ = require('underscore');
+var Template = require('./templates/articleList.hbs');
 
 
 module.exports = Backbone.View.extend({  
-    template: _.template( $('#tmp-article-list').html()),
-
     initialize: function (options) {
         this.el = options.el;
         this.activeModel = options.model;
@@ -18,8 +17,8 @@ module.exports = Backbone.View.extend({
         this.listenTo(this.articleCollection, 'sync', this.setFirstModelAsActive);
     },
     render: function() {
-        this.$el.find('.list-group').html(this.template({
-            'collection' : this.articleCollection
+        this.$el.find('#articleList').html(Template({
+            'articles' : this.articleCollection.toJSON()
         }));
     },
 
