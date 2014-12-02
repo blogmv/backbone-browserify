@@ -9,21 +9,21 @@ module.exports = Backbone.View.extend({
 		this.activeModel = options.model;
 		this.el = options.el;
 		this.listenTo(this.activeModel, 'change', this.fetchComments);
-		this.renderPostContent();
-	},
-	renderPostContent:function(){
-		var postComment = new PostComment({el : $(".comments"), model : activeModel});
-		postComment.render();
+		
 	},
 	fetchComments: function(){
 		this.activeModel.comments.once('sync', this.render, this);
 		this.activeModel.comments.fetch();
 	},
-
 	render: function() {
 		this.$el.html(this.template({
 			'collection' : this.activeModel.comments
 		}));
+		this.renderPostContent();
+	},
+	renderPostContent:function(){
+		debugger;
+		var postComment = new PostComment({el : $(".comments"), articleID : this.model.get("id")});
 	}
 });
 
