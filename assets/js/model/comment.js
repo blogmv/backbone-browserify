@@ -5,6 +5,8 @@ module.exports =  Backbone.Model.extend({
 	},
 	urlRoot: function(){
 		return "http://private-anon-14af1e823-blogmv.apiary-proxy.com/api/articles/"+this.get("articleId")+"/comments";
+
+		console.log('trying gulp 2');
 	},
 	getAuthorName: function() {
 		return this.get('author_name');

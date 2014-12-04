@@ -12,7 +12,7 @@ module.exports = Backbone.Collection.extend({
 });
 
 
-},{"../model/article":4,"backbone":12}],2:[function(require,module,exports){
+},{"../model/article":4,"backbone":13}],2:[function(require,module,exports){
 var Backbone = require('backbone');
 var CommentModel = require('../model/comment');
 
@@ -28,12 +28,12 @@ module.exports =  Backbone.Collection.extend({
 });
 
 
-},{"../model/comment":5,"backbone":12}],3:[function(require,module,exports){
+},{"../model/comment":5,"backbone":13}],3:[function(require,module,exports){
 var backbone = require('backbone');
 var Router = require('./router');
 var router = new Router();
 router.startApp();
-},{"./router":6,"backbone":12}],4:[function(require,module,exports){
+},{"./router":6,"backbone":13}],4:[function(require,module,exports){
 var Backbone= require('backbone');
 var CommentCollection = require('../collection/comments');
 
@@ -54,7 +54,7 @@ module.exports =  Backbone.Model.extend({
     }
 });
 
-},{"../collection/comments":2,"backbone":12}],5:[function(require,module,exports){
+},{"../collection/comments":2,"backbone":13}],5:[function(require,module,exports){
 var Backbone = require('backbone');
 module.exports =  Backbone.Model.extend({
 	defaults:{
@@ -62,6 +62,8 @@ module.exports =  Backbone.Model.extend({
 	},
 	urlRoot: function(){
 		return "http://private-anon-14af1e823-blogmv.apiary-proxy.com/api/articles/"+this.get("articleId")+"/comments";
+
+		
 	},
 	getAuthorName: function() {
 		return this.get('author_name');
@@ -95,7 +97,7 @@ module.exports =  Backbone.Model.extend({
 	  	}
 	}
 });
-},{"backbone":12}],6:[function(require,module,exports){
+},{"backbone":13}],6:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ = require('jquery');
 var ActiveModel = require('./model/article');
@@ -122,7 +124,7 @@ module.exports = Backbone.Router.extend({
 		Backbone.history.start();
 	}
 });
-},{"./collection/articles":1,"./model/article":4,"./view/articleComment":7,"./view/articleContent":8,"./view/mainView":9,"backbone":12,"jquery":21}],7:[function(require,module,exports){
+},{"./collection/articles":1,"./model/article":4,"./view/articleComment":7,"./view/articleContent":8,"./view/mainView":9,"backbone":13,"jquery":22}],7:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
@@ -153,7 +155,7 @@ module.exports = Backbone.View.extend({
 });
 
 
-},{"./postComment":10,"backbone":12,"jquery":21,"underscore":22}],8:[function(require,module,exports){
+},{"./postComment":10,"backbone":13,"jquery":22,"underscore":23}],8:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
@@ -174,15 +176,14 @@ module.exports = Backbone.View.extend({
 	}
 	
 });
-},{"backbone":12,"jquery":21,"underscore":22}],9:[function(require,module,exports){
+},{"backbone":13,"jquery":22,"underscore":23}],9:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ = require('jquery');
 var _ = require('underscore');
+var Template = require('./templates/articleList.hbs');
 
 
 module.exports = Backbone.View.extend({  
-    template: _.template( $('#tmp-article-list').html()),
-
     initialize: function (options) {
         this.el = options.el;
         this.activeModel = options.model;
@@ -195,8 +196,8 @@ module.exports = Backbone.View.extend({
         this.listenTo(this.articleCollection, 'sync', this.setFirstModelAsActive);
     },
     render: function() {
-        this.$el.find('.list-group').html(this.template({
-            'collection' : this.articleCollection
+        this.$el.find('#articleList').html(Template({
+            'articles' : this.articleCollection.toJSON()
         }));
     },
 
@@ -212,7 +213,7 @@ module.exports = Backbone.View.extend({
         this.activeModel.set(index);
     }
 });
-},{"backbone":12,"jquery":21,"underscore":22}],10:[function(require,module,exports){
+},{"./templates/articleList.hbs":11,"backbone":13,"jquery":22,"underscore":23}],10:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
@@ -234,7 +235,6 @@ module.exports = Backbone.View.extend({
 		this.render();
 	},
 	render: function() {
-		debugger;
 		this.$el.html(Template());
 	},
 	setArticleId:function(id) {
@@ -247,14 +247,46 @@ module.exports = Backbone.View.extend({
 		this.model.postComment();
 	}
 });
-},{"../model/comment":5,"./templates/commentForm.hbs":11,"backbone":12,"jquery":21,"underscore":22}],11:[function(require,module,exports){
+},{"../model/comment":5,"./templates/commentForm.hbs":12,"backbone":13,"jquery":22,"underscore":23}],11:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
-module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "    <div class=\"col-md-12\">\n        <h3>Write a comment</h3>\n        <span class=\"col-md-6\">\n            <input type=\"text\" name=\"name\" class=\"form-control input-lg\" placeholder=\"Name\">\n        </span>\n\n        <span class=\"col-md-6\">\n            <input type=\"email\" name=\"email\" class=\"form-control input-lg\" placeholder=\"Email\">\n        </span>\n\n        <span class=\"col-md-12\">\n            <textarea id=\"msg\" name=\"comment\" class=\"form-control input-lg\" placeholder=\"Comment\"></textarea>\n            <button class=\"btn btn-lg btn-alert btn-block\" id=\"postComment\" type=\"submit\">Post comment</button>\n        </span>\n        \n    </div>    \n";
-  },"useData":true});
+module.exports = HandlebarsCompiler.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, self=this;
 
-},{"hbsfy/runtime":20}],12:[function(require,module,exports){
+function program1(depth0,data) {
+  
+  var buffer = "", stack1, helper;
+  buffer += "\n	<li>\n	    <a href=\"article/"
+    + escapeExpression(((stack1 = (depth0 && depth0.id)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "\" class=\"list-group-item\">\n	        ";
+  if (helper = helpers.title) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.title); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "\n	    </a>\n	</li>	\n";
+  return buffer;
+  }
+
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.articles), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "                       ";
+  return buffer;
+  });
+
+},{"hbsfy/runtime":21}],12:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  
+
+
+  return "    <div class=\"col-md-12\">\n        <h3>Write a comment</h3>\n        <span class=\"col-md-6\">\n            <input type=\"text\" name=\"name\" class=\"form-control input-lg\" placeholder=\"Name\">\n        </span>\n\n        <span class=\"col-md-6\">\n            <input type=\"email\" name=\"email\" class=\"form-control input-lg\" placeholder=\"Email\">\n        </span>\n\n        <span class=\"col-md-12\">\n            <textarea id=\"msg\" name=\"comment\" class=\"form-control input-lg\" placeholder=\"Comment\"></textarea>\n            <button class=\"btn btn-lg btn-alert btn-block\" id=\"postComment\" type=\"submit\">Post comment</button>\n        </span>\n        \n    </div>    \n";
+  });
+
+},{"hbsfy/runtime":21}],13:[function(require,module,exports){
 //     Backbone.js 1.1.2
 
 //     (c) 2010-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -1864,7 +1896,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 
 }));
 
-},{"underscore":22}],13:[function(require,module,exports){
+},{"underscore":23}],14:[function(require,module,exports){
 "use strict";
 /*globals Handlebars: true */
 var base = require("./handlebars/base");
@@ -1884,7 +1916,6 @@ var create = function() {
   hb.SafeString = SafeString;
   hb.Exception = Exception;
   hb.Utils = Utils;
-  hb.escapeExpression = Utils.escapeExpression;
 
   hb.VM = runtime;
   hb.template = function(spec) {
@@ -1897,24 +1928,20 @@ var create = function() {
 var Handlebars = create();
 Handlebars.create = create;
 
-Handlebars['default'] = Handlebars;
-
 exports["default"] = Handlebars;
-},{"./handlebars/base":14,"./handlebars/exception":15,"./handlebars/runtime":16,"./handlebars/safe-string":17,"./handlebars/utils":18}],14:[function(require,module,exports){
+},{"./handlebars/base":15,"./handlebars/exception":16,"./handlebars/runtime":17,"./handlebars/safe-string":18,"./handlebars/utils":19}],15:[function(require,module,exports){
 "use strict";
 var Utils = require("./utils");
 var Exception = require("./exception")["default"];
 
-var VERSION = "2.0.0";
-exports.VERSION = VERSION;var COMPILER_REVISION = 6;
+var VERSION = "1.3.0";
+exports.VERSION = VERSION;var COMPILER_REVISION = 4;
 exports.COMPILER_REVISION = COMPILER_REVISION;
 var REVISION_CHANGES = {
   1: '<= 1.0.rc.2', // 1.0.rc.2 is actually rev2 but doesn't report it
   2: '== 1.0.0-rc.3',
   3: '== 1.0.0-rc.4',
-  4: '== 1.x.x',
-  5: '== 2.0.0-alpha.x',
-  6: '>= 2.0.0-beta.1'
+  4: '>= 1.0.0'
 };
 exports.REVISION_CHANGES = REVISION_CHANGES;
 var isArray = Utils.isArray,
@@ -1935,44 +1962,38 @@ exports.HandlebarsEnvironment = HandlebarsEnvironment;HandlebarsEnvironment.prot
   logger: logger,
   log: log,
 
-  registerHelper: function(name, fn) {
+  registerHelper: function(name, fn, inverse) {
     if (toString.call(name) === objectType) {
-      if (fn) { throw new Exception('Arg not supported with multiple helpers'); }
+      if (inverse || fn) { throw new Exception('Arg not supported with multiple helpers'); }
       Utils.extend(this.helpers, name);
     } else {
+      if (inverse) { fn.not = inverse; }
       this.helpers[name] = fn;
     }
   },
-  unregisterHelper: function(name) {
-    delete this.helpers[name];
-  },
 
-  registerPartial: function(name, partial) {
+  registerPartial: function(name, str) {
     if (toString.call(name) === objectType) {
       Utils.extend(this.partials,  name);
     } else {
-      this.partials[name] = partial;
+      this.partials[name] = str;
     }
-  },
-  unregisterPartial: function(name) {
-    delete this.partials[name];
   }
 };
 
 function registerDefaultHelpers(instance) {
-  instance.registerHelper('helperMissing', function(/* [args, ]options */) {
-    if(arguments.length === 1) {
-      // A missing field in a {{foo}} constuct.
+  instance.registerHelper('helperMissing', function(arg) {
+    if(arguments.length === 2) {
       return undefined;
     } else {
-      // Someone is actually trying to call something, blow up.
-      throw new Exception("Missing helper: '" + arguments[arguments.length-1].name + "'");
+      throw new Exception("Missing helper: '" + arg + "'");
     }
   });
 
   instance.registerHelper('blockHelperMissing', function(context, options) {
-    var inverse = options.inverse,
-        fn = options.fn;
+    var inverse = options.inverse || function() {}, fn = options.fn;
+
+    if (isFunction(context)) { context = context.call(this); }
 
     if(context === true) {
       return fn(this);
@@ -1980,37 +2001,18 @@ function registerDefaultHelpers(instance) {
       return inverse(this);
     } else if (isArray(context)) {
       if(context.length > 0) {
-        if (options.ids) {
-          options.ids = [options.name];
-        }
-
         return instance.helpers.each(context, options);
       } else {
         return inverse(this);
       }
     } else {
-      if (options.data && options.ids) {
-        var data = createFrame(options.data);
-        data.contextPath = Utils.appendContextPath(options.data.contextPath, options.name);
-        options = {data: data};
-      }
-
-      return fn(context, options);
+      return fn(context);
     }
   });
 
   instance.registerHelper('each', function(context, options) {
-    if (!options) {
-      throw new Exception('Must pass iterator to #each');
-    }
-
     var fn = options.fn, inverse = options.inverse;
     var i = 0, ret = "", data;
-
-    var contextPath;
-    if (options.data && options.ids) {
-      contextPath = Utils.appendContextPath(options.data.contextPath, options.ids[0]) + '.';
-    }
 
     if (isFunction(context)) { context = context.call(this); }
 
@@ -2025,24 +2027,16 @@ function registerDefaultHelpers(instance) {
             data.index = i;
             data.first = (i === 0);
             data.last  = (i === (context.length-1));
-
-            if (contextPath) {
-              data.contextPath = contextPath + i;
-            }
           }
           ret = ret + fn(context[i], { data: data });
         }
       } else {
         for(var key in context) {
           if(context.hasOwnProperty(key)) {
-            if(data) {
-              data.key = key;
+            if(data) { 
+              data.key = key; 
               data.index = i;
               data.first = (i === 0);
-
-              if (contextPath) {
-                data.contextPath = contextPath + key;
-              }
             }
             ret = ret + fn(context[key], {data: data});
             i++;
@@ -2078,28 +2072,12 @@ function registerDefaultHelpers(instance) {
   instance.registerHelper('with', function(context, options) {
     if (isFunction(context)) { context = context.call(this); }
 
-    var fn = options.fn;
-
-    if (!Utils.isEmpty(context)) {
-      if (options.data && options.ids) {
-        var data = createFrame(options.data);
-        data.contextPath = Utils.appendContextPath(options.data.contextPath, options.ids[0]);
-        options = {data:data};
-      }
-
-      return fn(context, options);
-    } else {
-      return options.inverse(this);
-    }
+    if (!Utils.isEmpty(context)) return options.fn(context);
   });
 
-  instance.registerHelper('log', function(message, options) {
+  instance.registerHelper('log', function(context, options) {
     var level = options.data && options.data.level != null ? parseInt(options.data.level, 10) : 1;
-    instance.log(level, message);
-  });
-
-  instance.registerHelper('lookup', function(obj, field) {
-    return obj && obj[field];
+    instance.log(level, context);
   });
 }
 
@@ -2114,25 +2092,25 @@ var logger = {
   level: 3,
 
   // can be overridden in the host environment
-  log: function(level, message) {
+  log: function(level, obj) {
     if (logger.level <= level) {
       var method = logger.methodMap[level];
       if (typeof console !== 'undefined' && console[method]) {
-        console[method].call(console, message);
+        console[method].call(console, obj);
       }
     }
   }
 };
 exports.logger = logger;
-var log = logger.log;
-exports.log = log;
-var createFrame = function(object) {
-  var frame = Utils.extend({}, object);
-  frame._parent = object;
-  return frame;
+function log(level, obj) { logger.log(level, obj); }
+
+exports.log = log;var createFrame = function(object) {
+  var obj = {};
+  Utils.extend(obj, object);
+  return obj;
 };
 exports.createFrame = createFrame;
-},{"./exception":15,"./utils":18}],15:[function(require,module,exports){
+},{"./exception":16,"./utils":19}],16:[function(require,module,exports){
 "use strict";
 
 var errorProps = ['description', 'fileName', 'lineNumber', 'message', 'name', 'number', 'stack'];
@@ -2161,13 +2139,12 @@ function Exception(message, node) {
 Exception.prototype = new Error();
 
 exports["default"] = Exception;
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 "use strict";
 var Utils = require("./utils");
 var Exception = require("./exception")["default"];
 var COMPILER_REVISION = require("./base").COMPILER_REVISION;
 var REVISION_CHANGES = require("./base").REVISION_CHANGES;
-var createFrame = require("./base").createFrame;
 
 function checkRevision(compilerInfo) {
   var compilerRevision = compilerInfo && compilerInfo[0] || 1,
@@ -2190,43 +2167,20 @@ function checkRevision(compilerInfo) {
 exports.checkRevision = checkRevision;// TODO: Remove this line and break up compilePartial
 
 function template(templateSpec, env) {
-  /* istanbul ignore next */
   if (!env) {
     throw new Exception("No environment passed to template");
-  }
-  if (!templateSpec || !templateSpec.main) {
-    throw new Exception('Unknown template object: ' + typeof templateSpec);
   }
 
   // Note: Using env.VM references rather than local var references throughout this section to allow
   // for external users to override these as psuedo-supported APIs.
-  env.VM.checkRevision(templateSpec.compiler);
+  var invokePartialWrapper = function(partial, name, context, helpers, partials, data) {
+    var result = env.VM.invokePartial.apply(this, arguments);
+    if (result != null) { return result; }
 
-  var invokePartialWrapper = function(partial, indent, name, context, hash, helpers, partials, data, depths) {
-    if (hash) {
-      context = Utils.extend({}, context, hash);
-    }
-
-    var result = env.VM.invokePartial.call(this, partial, name, context, helpers, partials, data, depths);
-
-    if (result == null && env.compile) {
-      var options = { helpers: helpers, partials: partials, data: data, depths: depths };
-      partials[name] = env.compile(partial, { data: data !== undefined, compat: templateSpec.compat }, env);
-      result = partials[name](context, options);
-    }
-    if (result != null) {
-      if (indent) {
-        var lines = result.split('\n');
-        for (var i = 0, l = lines.length; i < l; i++) {
-          if (!lines[i] && i + 1 === l) {
-            break;
-          }
-
-          lines[i] = indent + lines[i];
-        }
-        result = lines.join('\n');
-      }
-      return result;
+    if (env.compile) {
+      var options = { helpers: helpers, partials: partials, data: data };
+      partials[name] = env.compile(partial, { data: data !== undefined }, env);
+      return partials[name](context, options);
     } else {
       throw new Exception("The partial " + name + " could not be compiled when running in runtime-only mode");
     }
@@ -2234,110 +2188,84 @@ function template(templateSpec, env) {
 
   // Just add water
   var container = {
-    lookup: function(depths, name) {
-      var len = depths.length;
-      for (var i = 0; i < len; i++) {
-        if (depths[i] && depths[i][name] != null) {
-          return depths[i][name];
-        }
-      }
-    },
-    lambda: function(current, context) {
-      return typeof current === 'function' ? current.call(context) : current;
-    },
-
     escapeExpression: Utils.escapeExpression,
     invokePartial: invokePartialWrapper,
-
-    fn: function(i) {
-      return templateSpec[i];
-    },
-
     programs: [],
-    program: function(i, data, depths) {
-      var programWrapper = this.programs[i],
-          fn = this.fn(i);
-      if (data || depths) {
-        programWrapper = program(this, i, fn, data, depths);
+    program: function(i, fn, data) {
+      var programWrapper = this.programs[i];
+      if(data) {
+        programWrapper = program(i, fn, data);
       } else if (!programWrapper) {
-        programWrapper = this.programs[i] = program(this, i, fn);
+        programWrapper = this.programs[i] = program(i, fn);
       }
       return programWrapper;
-    },
-
-    data: function(data, depth) {
-      while (data && depth--) {
-        data = data._parent;
-      }
-      return data;
     },
     merge: function(param, common) {
       var ret = param || common;
 
       if (param && common && (param !== common)) {
-        ret = Utils.extend({}, common, param);
+        ret = {};
+        Utils.extend(ret, common);
+        Utils.extend(ret, param);
       }
-
       return ret;
     },
-
+    programWithDepth: env.VM.programWithDepth,
     noop: env.VM.noop,
-    compilerInfo: templateSpec.compiler
+    compilerInfo: null
   };
 
-  var ret = function(context, options) {
+  return function(context, options) {
     options = options || {};
-    var data = options.data;
+    var namespace = options.partial ? options : env,
+        helpers,
+        partials;
 
-    ret._setup(options);
-    if (!options.partial && templateSpec.useData) {
-      data = initData(context, data);
-    }
-    var depths;
-    if (templateSpec.useDepths) {
-      depths = options.depths ? [context].concat(options.depths) : [context];
-    }
-
-    return templateSpec.main.call(container, context, container.helpers, container.partials, data, depths);
-  };
-  ret.isTop = true;
-
-  ret._setup = function(options) {
     if (!options.partial) {
-      container.helpers = container.merge(options.helpers, env.helpers);
-
-      if (templateSpec.usePartial) {
-        container.partials = container.merge(options.partials, env.partials);
-      }
-    } else {
-      container.helpers = options.helpers;
-      container.partials = options.partials;
+      helpers = options.helpers;
+      partials = options.partials;
     }
-  };
+    var result = templateSpec.call(
+          container,
+          namespace, context,
+          helpers,
+          partials,
+          options.data);
 
-  ret._child = function(i, data, depths) {
-    if (templateSpec.useDepths && !depths) {
-      throw new Exception('must pass parent depths');
+    if (!options.partial) {
+      env.VM.checkRevision(container.compilerInfo);
     }
 
-    return program(container, i, templateSpec[i], data, depths);
+    return result;
   };
-  return ret;
 }
 
-exports.template = template;function program(container, i, fn, data, depths) {
+exports.template = template;function programWithDepth(i, fn, data /*, $depth */) {
+  var args = Array.prototype.slice.call(arguments, 3);
+
   var prog = function(context, options) {
     options = options || {};
 
-    return fn.call(container, context, container.helpers, container.partials, options.data || data, depths && [context].concat(depths));
+    return fn.apply(this, [context, options.data || data].concat(args));
   };
   prog.program = i;
-  prog.depth = depths ? depths.length : 0;
+  prog.depth = args.length;
   return prog;
 }
 
-exports.program = program;function invokePartial(partial, name, context, helpers, partials, data, depths) {
-  var options = { partial: true, helpers: helpers, partials: partials, data: data, depths: depths };
+exports.programWithDepth = programWithDepth;function program(i, fn, data) {
+  var prog = function(context, options) {
+    options = options || {};
+
+    return fn(context, options.data || data);
+  };
+  prog.program = i;
+  prog.depth = 0;
+  return prog;
+}
+
+exports.program = program;function invokePartial(partial, name, context, helpers, partials, data) {
+  var options = { partial: true, helpers: helpers, partials: partials, data: data };
 
   if(partial === undefined) {
     throw new Exception("The partial " + name + " could not be found");
@@ -2348,14 +2276,8 @@ exports.program = program;function invokePartial(partial, name, context, helpers
 
 exports.invokePartial = invokePartial;function noop() { return ""; }
 
-exports.noop = noop;function initData(context, data) {
-  if (!data || !('root' in data)) {
-    data = data ? createFrame(data) : {};
-    data.root = context;
-  }
-  return data;
-}
-},{"./base":14,"./exception":15,"./utils":18}],17:[function(require,module,exports){
+exports.noop = noop;
+},{"./base":15,"./exception":16,"./utils":19}],18:[function(require,module,exports){
 "use strict";
 // Build out our basic SafeString type
 function SafeString(string) {
@@ -2367,7 +2289,7 @@ SafeString.prototype.toString = function() {
 };
 
 exports["default"] = SafeString;
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 "use strict";
 /*jshint -W004 */
 var SafeString = require("./safe-string")["default"];
@@ -2385,19 +2307,15 @@ var badChars = /[&<>"'`]/g;
 var possible = /[&<>"'`]/;
 
 function escapeChar(chr) {
-  return escape[chr];
+  return escape[chr] || "&amp;";
 }
 
-function extend(obj /* , ...source */) {
-  for (var i = 1; i < arguments.length; i++) {
-    for (var key in arguments[i]) {
-      if (Object.prototype.hasOwnProperty.call(arguments[i], key)) {
-        obj[key] = arguments[i][key];
-      }
+function extend(obj, value) {
+  for(var key in value) {
+    if(Object.prototype.hasOwnProperty.call(value, key)) {
+      obj[key] = value[key];
     }
   }
-
-  return obj;
 }
 
 exports.extend = extend;var toString = Object.prototype.toString;
@@ -2408,7 +2326,6 @@ var isFunction = function(value) {
   return typeof value === 'function';
 };
 // fallback for older versions of Chrome and Safari
-/* istanbul ignore next */
 if (isFunction(/x/)) {
   isFunction = function(value) {
     return typeof value === 'function' && toString.call(value) === '[object Function]';
@@ -2416,7 +2333,6 @@ if (isFunction(/x/)) {
 }
 var isFunction;
 exports.isFunction = isFunction;
-/* istanbul ignore next */
 var isArray = Array.isArray || function(value) {
   return (value && typeof value === 'object') ? toString.call(value) === '[object Array]' : false;
 };
@@ -2426,10 +2342,8 @@ function escapeExpression(string) {
   // don't escape SafeStrings, since they're already safe
   if (string instanceof SafeString) {
     return string.toString();
-  } else if (string == null) {
+  } else if (!string && string !== 0) {
     return "";
-  } else if (!string) {
-    return string + '';
   }
 
   // Force a string conversion as this will be done by the append regardless and
@@ -2451,20 +2365,16 @@ exports.escapeExpression = escapeExpression;function isEmpty(value) {
   }
 }
 
-exports.isEmpty = isEmpty;function appendContextPath(contextPath, id) {
-  return (contextPath ? contextPath + '.' : '') + id;
-}
-
-exports.appendContextPath = appendContextPath;
-},{"./safe-string":17}],19:[function(require,module,exports){
+exports.isEmpty = isEmpty;
+},{"./safe-string":18}],20:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime');
 
-},{"./dist/cjs/handlebars.runtime":13}],20:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":14}],21:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":19}],21:[function(require,module,exports){
+},{"handlebars/runtime":20}],22:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.1
  * http://jquery.com/
@@ -11656,7 +11566,7 @@ return jQuery;
 
 }));
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 //     Underscore.js 1.7.0
 //     http://underscorejs.org
 //     (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors

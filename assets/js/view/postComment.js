@@ -19,7 +19,6 @@ module.exports = Backbone.View.extend({
 		this.render();
 	},
 	render: function() {
-		debugger;
 		this.$el.html(Template());
 	},
 	setArticleId:function(id) {
