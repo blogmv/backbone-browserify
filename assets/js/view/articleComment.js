@@ -22,7 +22,7 @@ module.exports = Backbone.View.extend({
 		this.renderPostContent();
 	},
 	renderPostContent:function(){
-		debugger;
+		
 		var postComment = new PostComment({el : $("#comments"), articleID : this.model.get("id")});
 	}
 });

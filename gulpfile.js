@@ -8,7 +8,7 @@ gulp.task('browserify', function () {
 			transform: ['browserify-handlebars'],
 			extension: ['.hbs']
 		}))
-		.pipe(rename('bundle.js'))
+		.pipe(rename('js/bundle.js'))
 		.pipe(gulp.dest('assets/'));
 });
 

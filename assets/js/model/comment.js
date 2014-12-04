@@ -3,10 +3,8 @@ module.exports =  Backbone.Model.extend({
 	defaults:{
 		articleId:''
 	},
-	urlRoot: function(){
-		return "http://private-anon-14af1e823-blogmv.apiary-proxy.com/api/articles/"+this.get("articleId")+"/comments";
-
-		console.log('trying gulp 2');
+	url: function(){
+		return "http://blogmv-api.appspot.com/api/articles/"+this.get("articleId")+"/comments/";
 	},
 	getAuthorName: function() {
 		return this.get('author_name');
@@ -26,7 +24,7 @@ module.exports =  Backbone.Model.extend({
 	},
 	postComment:function() {
 		var forceValidation = true
-		if (this.isValid(forceValidation)){
+		if (this.isValid(forceValidation)){			
 			this.save();
 		}
 	},

@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var Backbone = require('backbone');
 var ArticleModel = require('../model/article');
 
@@ -60,10 +60,8 @@ module.exports =  Backbone.Model.extend({
 	defaults:{
 		articleId:''
 	},
-	urlRoot: function(){
-		return "http://private-anon-14af1e823-blogmv.apiary-proxy.com/api/articles/"+this.get("articleId")+"/comments";
-
-		
+	url: function(){
+		return "http://blogmv-api.appspot.com/api/articles/"+this.get("articleId")+"/comments/";
 	},
 	getAuthorName: function() {
 		return this.get('author_name');
@@ -83,7 +81,7 @@ module.exports =  Backbone.Model.extend({
 	},
 	postComment:function() {
 		var forceValidation = true
-		if (this.isValid(forceValidation)){
+		if (this.isValid(forceValidation)){			
 			this.save();
 		}
 	},
@@ -124,7 +122,7 @@ module.exports = Backbone.Router.extend({
 		Backbone.history.start();
 	}
 });
-},{"./collection/articles":1,"./model/article":4,"./view/articleComment":7,"./view/articleContent":8,"./view/mainView":9,"backbone":13,"jquery":22}],7:[function(require,module,exports){
+},{"./collection/articles":1,"./model/article":4,"./view/articleComment":7,"./view/articleContent":8,"./view/mainView":9,"backbone":13,"jquery":21}],7:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
@@ -149,13 +147,13 @@ module.exports = Backbone.View.extend({
 		this.renderPostContent();
 	},
 	renderPostContent:function(){
-		debugger;
+		
 		var postComment = new PostComment({el : $("#comments"), articleID : this.model.get("id")});
 	}
 });
 
 
-},{"./postComment":10,"backbone":13,"jquery":22,"underscore":23}],8:[function(require,module,exports){
+},{"./postComment":10,"backbone":13,"jquery":21,"underscore":22}],8:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
@@ -176,7 +174,7 @@ module.exports = Backbone.View.extend({
 	}
 	
 });
-},{"backbone":13,"jquery":22,"underscore":23}],9:[function(require,module,exports){
+},{"backbone":13,"jquery":21,"underscore":22}],9:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ = require('jquery');
 var _ = require('underscore');
@@ -213,7 +211,7 @@ module.exports = Backbone.View.extend({
         this.activeModel.set(index);
     }
 });
-},{"./templates/articleList.hbs":11,"backbone":13,"jquery":22,"underscore":23}],10:[function(require,module,exports){
+},{"./templates/articleList.hbs":11,"backbone":13,"jquery":21,"underscore":22}],10:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
@@ -247,46 +245,25 @@ module.exports = Backbone.View.extend({
 		this.model.postComment();
 	}
 });
-},{"../model/comment":5,"./templates/commentForm.hbs":12,"backbone":13,"jquery":22,"underscore":23}],11:[function(require,module,exports){
-// hbsfy compiled Handlebars template
-var HandlebarsCompiler = require('hbsfy/runtime');
-module.exports = HandlebarsCompiler.template(function (Handlebars,depth0,helpers,partials,data) {
-  this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, self=this;
-
-function program1(depth0,data) {
-  
-  var buffer = "", stack1, helper;
-  buffer += "\n	<li>\n	    <a href=\"article/"
-    + escapeExpression(((stack1 = (depth0 && depth0.id)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "\" class=\"list-group-item\">\n	        ";
-  if (helper = helpers.title) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.title); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
+},{"../model/comment":5,"./templates/commentForm.hbs":12,"backbone":13,"jquery":21,"underscore":22}],11:[function(require,module,exports){
+var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"1":function(depth0,helpers,partials,data) {
+  var helper, lambda=this.lambda, escapeExpression=this.escapeExpression, functionType="function", helperMissing=helpers.helperMissing;
+  return "	<li>\n	    <a href=\"article/"
+    + escapeExpression(lambda((depth0 != null ? depth0.id : depth0), depth0))
+    + "\" class=\"list-group-item\">\n	        "
+    + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
     + "\n	    </a>\n	</li>	\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "";
+  stack1 = helpers.each.call(depth0, (depth0 != null ? depth0.articles : depth0), {"name":"each","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
   return buffer;
-  }
-
-  stack1 = helpers.each.call(depth0, (depth0 && depth0.articles), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "                       ";
-  return buffer;
-  });
-
-},{"hbsfy/runtime":21}],12:[function(require,module,exports){
-// hbsfy compiled Handlebars template
-var HandlebarsCompiler = require('hbsfy/runtime');
-module.exports = HandlebarsCompiler.template(function (Handlebars,depth0,helpers,partials,data) {
-  this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  
-
-
-  return "    <div class=\"col-md-12\">\n        <h3>Write a comment</h3>\n        <span class=\"col-md-6\">\n            <input type=\"text\" name=\"name\" class=\"form-control input-lg\" placeholder=\"Name\">\n        </span>\n\n        <span class=\"col-md-6\">\n            <input type=\"email\" name=\"email\" class=\"form-control input-lg\" placeholder=\"Email\">\n        </span>\n\n        <span class=\"col-md-12\">\n            <textarea id=\"msg\" name=\"comment\" class=\"form-control input-lg\" placeholder=\"Comment\"></textarea>\n            <button class=\"btn btn-lg btn-alert btn-block\" id=\"postComment\" type=\"submit\">Post comment</button>\n        </span>\n        \n    </div>    \n";
-  });
-
-},{"hbsfy/runtime":21}],13:[function(require,module,exports){
+},"useData":true});
+},{"handlebars/runtime":20}],12:[function(require,module,exports){
+var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  return "    <div class=\"col-md-12\">\n        <h3>Write a comment</h3>\n        <span class=\"col-md-6\">\n            <input type=\"text\" name=\"author_name\" class=\"form-control input-lg\" placeholder=\"Name\">\n        </span>\n\n        <span class=\"col-md-6\">\n            <input type=\"email\" name=\"author_email\" class=\"form-control input-lg\" placeholder=\"Email\">\n        </span>\n\n        <span class=\"col-md-12\">\n            <textarea id=\"msg\" name=\"content\" class=\"form-control input-lg\" placeholder=\"Comment\"></textarea>\n            <button class=\"btn btn-lg btn-alert btn-block\" id=\"postComment\" type=\"submit\">Post comment</button>\n        </span>\n        \n    </div>    \n";
+  },"useData":true});
+},{"handlebars/runtime":20}],13:[function(require,module,exports){
 //     Backbone.js 1.1.2
 
 //     (c) 2010-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -1896,7 +1873,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
 
 }));
 
-},{"underscore":23}],14:[function(require,module,exports){
+},{"underscore":22}],14:[function(require,module,exports){
 "use strict";
 /*globals Handlebars: true */
 var base = require("./handlebars/base");
@@ -1916,6 +1893,7 @@ var create = function() {
   hb.SafeString = SafeString;
   hb.Exception = Exception;
   hb.Utils = Utils;
+  hb.escapeExpression = Utils.escapeExpression;
 
   hb.VM = runtime;
   hb.template = function(spec) {
@@ -1928,20 +1906,24 @@ var create = function() {
 var Handlebars = create();
 Handlebars.create = create;
 
+Handlebars['default'] = Handlebars;
+
 exports["default"] = Handlebars;
 },{"./handlebars/base":15,"./handlebars/exception":16,"./handlebars/runtime":17,"./handlebars/safe-string":18,"./handlebars/utils":19}],15:[function(require,module,exports){
 "use strict";
 var Utils = require("./utils");
 var Exception = require("./exception")["default"];
 
-var VERSION = "1.3.0";
-exports.VERSION = VERSION;var COMPILER_REVISION = 4;
+var VERSION = "2.0.0";
+exports.VERSION = VERSION;var COMPILER_REVISION = 6;
 exports.COMPILER_REVISION = COMPILER_REVISION;
 var REVISION_CHANGES = {
   1: '<= 1.0.rc.2', // 1.0.rc.2 is actually rev2 but doesn't report it
   2: '== 1.0.0-rc.3',
   3: '== 1.0.0-rc.4',
-  4: '>= 1.0.0'
+  4: '== 1.x.x',
+  5: '== 2.0.0-alpha.x',
+  6: '>= 2.0.0-beta.1'
 };
 exports.REVISION_CHANGES = REVISION_CHANGES;
 var isArray = Utils.isArray,
@@ -1962,38 +1944,44 @@ exports.HandlebarsEnvironment = HandlebarsEnvironment;HandlebarsEnvironment.prot
   logger: logger,
   log: log,
 
-  registerHelper: function(name, fn, inverse) {
+  registerHelper: function(name, fn) {
     if (toString.call(name) === objectType) {
-      if (inverse || fn) { throw new Exception('Arg not supported with multiple helpers'); }
+      if (fn) { throw new Exception('Arg not supported with multiple helpers'); }
       Utils.extend(this.helpers, name);
     } else {
-      if (inverse) { fn.not = inverse; }
       this.helpers[name] = fn;
     }
   },
+  unregisterHelper: function(name) {
+    delete this.helpers[name];
+  },
 
-  registerPartial: function(name, str) {
+  registerPartial: function(name, partial) {
     if (toString.call(name) === objectType) {
       Utils.extend(this.partials,  name);
     } else {
-      this.partials[name] = str;
+      this.partials[name] = partial;
     }
+  },
+  unregisterPartial: function(name) {
+    delete this.partials[name];
   }
 };
 
 function registerDefaultHelpers(instance) {
-  instance.registerHelper('helperMissing', function(arg) {
-    if(arguments.length === 2) {
+  instance.registerHelper('helperMissing', function(/* [args, ]options */) {
+    if(arguments.length === 1) {
+      // A missing field in a {{foo}} constuct.
       return undefined;
     } else {
-      throw new Exception("Missing helper: '" + arg + "'");
+      // Someone is actually trying to call something, blow up.
+      throw new Exception("Missing helper: '" + arguments[arguments.length-1].name + "'");
     }
   });
 
   instance.registerHelper('blockHelperMissing', function(context, options) {
-    var inverse = options.inverse || function() {}, fn = options.fn;
-
-    if (isFunction(context)) { context = context.call(this); }
+    var inverse = options.inverse,
+        fn = options.fn;
 
     if(context === true) {
       return fn(this);
@@ -2001,18 +1989,37 @@ function registerDefaultHelpers(instance) {
       return inverse(this);
     } else if (isArray(context)) {
       if(context.length > 0) {
+        if (options.ids) {
+          options.ids = [options.name];
+        }
+
         return instance.helpers.each(context, options);
       } else {
         return inverse(this);
       }
     } else {
-      return fn(context);
+      if (options.data && options.ids) {
+        var data = createFrame(options.data);
+        data.contextPath = Utils.appendContextPath(options.data.contextPath, options.name);
+        options = {data: data};
+      }
+
+      return fn(context, options);
     }
   });
 
   instance.registerHelper('each', function(context, options) {
+    if (!options) {
+      throw new Exception('Must pass iterator to #each');
+    }
+
     var fn = options.fn, inverse = options.inverse;
     var i = 0, ret = "", data;
+
+    var contextPath;
+    if (options.data && options.ids) {
+      contextPath = Utils.appendContextPath(options.data.contextPath, options.ids[0]) + '.';
+    }
 
     if (isFunction(context)) { context = context.call(this); }
 
@@ -2027,16 +2034,24 @@ function registerDefaultHelpers(instance) {
             data.index = i;
             data.first = (i === 0);
             data.last  = (i === (context.length-1));
+
+            if (contextPath) {
+              data.contextPath = contextPath + i;
+            }
           }
           ret = ret + fn(context[i], { data: data });
         }
       } else {
         for(var key in context) {
           if(context.hasOwnProperty(key)) {
-            if(data) { 
-              data.key = key; 
+            if(data) {
+              data.key = key;
               data.index = i;
               data.first = (i === 0);
+
+              if (contextPath) {
+                data.contextPath = contextPath + key;
+              }
             }
             ret = ret + fn(context[key], {data: data});
             i++;
@@ -2072,12 +2087,28 @@ function registerDefaultHelpers(instance) {
   instance.registerHelper('with', function(context, options) {
     if (isFunction(context)) { context = context.call(this); }
 
-    if (!Utils.isEmpty(context)) return options.fn(context);
+    var fn = options.fn;
+
+    if (!Utils.isEmpty(context)) {
+      if (options.data && options.ids) {
+        var data = createFrame(options.data);
+        data.contextPath = Utils.appendContextPath(options.data.contextPath, options.ids[0]);
+        options = {data:data};
+      }
+
+      return fn(context, options);
+    } else {
+      return options.inverse(this);
+    }
   });
 
-  instance.registerHelper('log', function(context, options) {
+  instance.registerHelper('log', function(message, options) {
     var level = options.data && options.data.level != null ? parseInt(options.data.level, 10) : 1;
-    instance.log(level, context);
+    instance.log(level, message);
+  });
+
+  instance.registerHelper('lookup', function(obj, field) {
+    return obj && obj[field];
   });
 }
 
@@ -2092,22 +2123,22 @@ var logger = {
   level: 3,
 
   // can be overridden in the host environment
-  log: function(level, obj) {
+  log: function(level, message) {
     if (logger.level <= level) {
       var method = logger.methodMap[level];
       if (typeof console !== 'undefined' && console[method]) {
-        console[method].call(console, obj);
+        console[method].call(console, message);
       }
     }
   }
 };
 exports.logger = logger;
-function log(level, obj) { logger.log(level, obj); }
-
-exports.log = log;var createFrame = function(object) {
-  var obj = {};
-  Utils.extend(obj, object);
-  return obj;
+var log = logger.log;
+exports.log = log;
+var createFrame = function(object) {
+  var frame = Utils.extend({}, object);
+  frame._parent = object;
+  return frame;
 };
 exports.createFrame = createFrame;
 },{"./exception":16,"./utils":19}],16:[function(require,module,exports){
@@ -2145,6 +2176,7 @@ var Utils = require("./utils");
 var Exception = require("./exception")["default"];
 var COMPILER_REVISION = require("./base").COMPILER_REVISION;
 var REVISION_CHANGES = require("./base").REVISION_CHANGES;
+var createFrame = require("./base").createFrame;
 
 function checkRevision(compilerInfo) {
   var compilerRevision = compilerInfo && compilerInfo[0] || 1,
@@ -2167,20 +2199,43 @@ function checkRevision(compilerInfo) {
 exports.checkRevision = checkRevision;// TODO: Remove this line and break up compilePartial
 
 function template(templateSpec, env) {
+  /* istanbul ignore next */
   if (!env) {
     throw new Exception("No environment passed to template");
+  }
+  if (!templateSpec || !templateSpec.main) {
+    throw new Exception('Unknown template object: ' + typeof templateSpec);
   }
 
   // Note: Using env.VM references rather than local var references throughout this section to allow
   // for external users to override these as psuedo-supported APIs.
-  var invokePartialWrapper = function(partial, name, context, helpers, partials, data) {
-    var result = env.VM.invokePartial.apply(this, arguments);
-    if (result != null) { return result; }
+  env.VM.checkRevision(templateSpec.compiler);
 
-    if (env.compile) {
-      var options = { helpers: helpers, partials: partials, data: data };
-      partials[name] = env.compile(partial, { data: data !== undefined }, env);
-      return partials[name](context, options);
+  var invokePartialWrapper = function(partial, indent, name, context, hash, helpers, partials, data, depths) {
+    if (hash) {
+      context = Utils.extend({}, context, hash);
+    }
+
+    var result = env.VM.invokePartial.call(this, partial, name, context, helpers, partials, data, depths);
+
+    if (result == null && env.compile) {
+      var options = { helpers: helpers, partials: partials, data: data, depths: depths };
+      partials[name] = env.compile(partial, { data: data !== undefined, compat: templateSpec.compat }, env);
+      result = partials[name](context, options);
+    }
+    if (result != null) {
+      if (indent) {
+        var lines = result.split('\n');
+        for (var i = 0, l = lines.length; i < l; i++) {
+          if (!lines[i] && i + 1 === l) {
+            break;
+          }
+
+          lines[i] = indent + lines[i];
+        }
+        result = lines.join('\n');
+      }
+      return result;
     } else {
       throw new Exception("The partial " + name + " could not be compiled when running in runtime-only mode");
     }
@@ -2188,84 +2243,110 @@ function template(templateSpec, env) {
 
   // Just add water
   var container = {
+    lookup: function(depths, name) {
+      var len = depths.length;
+      for (var i = 0; i < len; i++) {
+        if (depths[i] && depths[i][name] != null) {
+          return depths[i][name];
+        }
+      }
+    },
+    lambda: function(current, context) {
+      return typeof current === 'function' ? current.call(context) : current;
+    },
+
     escapeExpression: Utils.escapeExpression,
     invokePartial: invokePartialWrapper,
+
+    fn: function(i) {
+      return templateSpec[i];
+    },
+
     programs: [],
-    program: function(i, fn, data) {
-      var programWrapper = this.programs[i];
-      if(data) {
-        programWrapper = program(i, fn, data);
+    program: function(i, data, depths) {
+      var programWrapper = this.programs[i],
+          fn = this.fn(i);
+      if (data || depths) {
+        programWrapper = program(this, i, fn, data, depths);
       } else if (!programWrapper) {
-        programWrapper = this.programs[i] = program(i, fn);
+        programWrapper = this.programs[i] = program(this, i, fn);
       }
       return programWrapper;
+    },
+
+    data: function(data, depth) {
+      while (data && depth--) {
+        data = data._parent;
+      }
+      return data;
     },
     merge: function(param, common) {
       var ret = param || common;
 
       if (param && common && (param !== common)) {
-        ret = {};
-        Utils.extend(ret, common);
-        Utils.extend(ret, param);
+        ret = Utils.extend({}, common, param);
       }
+
       return ret;
     },
-    programWithDepth: env.VM.programWithDepth,
+
     noop: env.VM.noop,
-    compilerInfo: null
+    compilerInfo: templateSpec.compiler
   };
 
-  return function(context, options) {
+  var ret = function(context, options) {
     options = options || {};
-    var namespace = options.partial ? options : env,
-        helpers,
-        partials;
+    var data = options.data;
 
-    if (!options.partial) {
-      helpers = options.helpers;
-      partials = options.partials;
+    ret._setup(options);
+    if (!options.partial && templateSpec.useData) {
+      data = initData(context, data);
     }
-    var result = templateSpec.call(
-          container,
-          namespace, context,
-          helpers,
-          partials,
-          options.data);
-
-    if (!options.partial) {
-      env.VM.checkRevision(container.compilerInfo);
+    var depths;
+    if (templateSpec.useDepths) {
+      depths = options.depths ? [context].concat(options.depths) : [context];
     }
 
-    return result;
+    return templateSpec.main.call(container, context, container.helpers, container.partials, data, depths);
   };
+  ret.isTop = true;
+
+  ret._setup = function(options) {
+    if (!options.partial) {
+      container.helpers = container.merge(options.helpers, env.helpers);
+
+      if (templateSpec.usePartial) {
+        container.partials = container.merge(options.partials, env.partials);
+      }
+    } else {
+      container.helpers = options.helpers;
+      container.partials = options.partials;
+    }
+  };
+
+  ret._child = function(i, data, depths) {
+    if (templateSpec.useDepths && !depths) {
+      throw new Exception('must pass parent depths');
+    }
+
+    return program(container, i, templateSpec[i], data, depths);
+  };
+  return ret;
 }
 
-exports.template = template;function programWithDepth(i, fn, data /*, $depth */) {
-  var args = Array.prototype.slice.call(arguments, 3);
-
+exports.template = template;function program(container, i, fn, data, depths) {
   var prog = function(context, options) {
     options = options || {};
 
-    return fn.apply(this, [context, options.data || data].concat(args));
+    return fn.call(container, context, container.helpers, container.partials, options.data || data, depths && [context].concat(depths));
   };
   prog.program = i;
-  prog.depth = args.length;
+  prog.depth = depths ? depths.length : 0;
   return prog;
 }
 
-exports.programWithDepth = programWithDepth;function program(i, fn, data) {
-  var prog = function(context, options) {
-    options = options || {};
-
-    return fn(context, options.data || data);
-  };
-  prog.program = i;
-  prog.depth = 0;
-  return prog;
-}
-
-exports.program = program;function invokePartial(partial, name, context, helpers, partials, data) {
-  var options = { partial: true, helpers: helpers, partials: partials, data: data };
+exports.program = program;function invokePartial(partial, name, context, helpers, partials, data, depths) {
+  var options = { partial: true, helpers: helpers, partials: partials, data: data, depths: depths };
 
   if(partial === undefined) {
     throw new Exception("The partial " + name + " could not be found");
@@ -2276,7 +2357,13 @@ exports.program = program;function invokePartial(partial, name, context, helpers
 
 exports.invokePartial = invokePartial;function noop() { return ""; }
 
-exports.noop = noop;
+exports.noop = noop;function initData(context, data) {
+  if (!data || !('root' in data)) {
+    data = data ? createFrame(data) : {};
+    data.root = context;
+  }
+  return data;
+}
 },{"./base":15,"./exception":16,"./utils":19}],18:[function(require,module,exports){
 "use strict";
 // Build out our basic SafeString type
@@ -2307,15 +2394,19 @@ var badChars = /[&<>"'`]/g;
 var possible = /[&<>"'`]/;
 
 function escapeChar(chr) {
-  return escape[chr] || "&amp;";
+  return escape[chr];
 }
 
-function extend(obj, value) {
-  for(var key in value) {
-    if(Object.prototype.hasOwnProperty.call(value, key)) {
-      obj[key] = value[key];
+function extend(obj /* , ...source */) {
+  for (var i = 1; i < arguments.length; i++) {
+    for (var key in arguments[i]) {
+      if (Object.prototype.hasOwnProperty.call(arguments[i], key)) {
+        obj[key] = arguments[i][key];
+      }
     }
   }
+
+  return obj;
 }
 
 exports.extend = extend;var toString = Object.prototype.toString;
@@ -2326,6 +2417,7 @@ var isFunction = function(value) {
   return typeof value === 'function';
 };
 // fallback for older versions of Chrome and Safari
+/* istanbul ignore next */
 if (isFunction(/x/)) {
   isFunction = function(value) {
     return typeof value === 'function' && toString.call(value) === '[object Function]';
@@ -2333,6 +2425,7 @@ if (isFunction(/x/)) {
 }
 var isFunction;
 exports.isFunction = isFunction;
+/* istanbul ignore next */
 var isArray = Array.isArray || function(value) {
   return (value && typeof value === 'object') ? toString.call(value) === '[object Array]' : false;
 };
@@ -2342,8 +2435,10 @@ function escapeExpression(string) {
   // don't escape SafeStrings, since they're already safe
   if (string instanceof SafeString) {
     return string.toString();
-  } else if (!string && string !== 0) {
+  } else if (string == null) {
     return "";
+  } else if (!string) {
+    return string + '';
   }
 
   // Force a string conversion as this will be done by the append regardless and
@@ -2365,16 +2460,17 @@ exports.escapeExpression = escapeExpression;function isEmpty(value) {
   }
 }
 
-exports.isEmpty = isEmpty;
+exports.isEmpty = isEmpty;function appendContextPath(contextPath, id) {
+  return (contextPath ? contextPath + '.' : '') + id;
+}
+
+exports.appendContextPath = appendContextPath;
 },{"./safe-string":18}],20:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime');
 
 },{"./dist/cjs/handlebars.runtime":14}],21:[function(require,module,exports){
-module.exports = require("handlebars/runtime")["default"];
-
-},{"handlebars/runtime":20}],22:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.1
  * http://jquery.com/
@@ -11566,7 +11662,7 @@ return jQuery;
 
 }));
 
-},{}],23:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 //     Underscore.js 1.7.0
 //     http://underscorejs.org
 //     (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -12983,4 +13079,4 @@ return jQuery;
   }
 }.call(this));
 
-},{}]},{},[3]);
+},{}]},{},[3])
