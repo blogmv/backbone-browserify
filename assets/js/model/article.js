@@ -7,13 +7,5 @@ module.exports =  Backbone.Model.extend({
         this.comments = new CommentCollection([], {
             "article": this
         });
-    },
-
-    getTitle: function() {
-        return this.get('title');
-    },
-
-    getContent: function() {
-        return this.get('content');
     }
 });

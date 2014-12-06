@@ -4,7 +4,7 @@ var ArticleModel = require('../model/article');
 
 module.exports = Backbone.Collection.extend({
 	
-	url:   'http://private-anon-14af1e823-blogmv.apiary-proxy.com/api/articles',
+	url:   'http://blogmv-api.appspot.com/api/articles/',
 	model: ArticleModel,
 	getArticles:function(){
 		this.fetch();
@@ -12,7 +12,7 @@ module.exports = Backbone.Collection.extend({
 });
 
 
-},{"../model/article":4,"backbone":13}],2:[function(require,module,exports){
+},{"../model/article":4,"backbone":15}],2:[function(require,module,exports){
 var Backbone = require('backbone');
 var CommentModel = require('../model/comment');
 
@@ -24,16 +24,19 @@ module.exports =  Backbone.Collection.extend({
 	},
 	initialize: function(models, options){
 		this.article = options.article
+	},
+	postNewComment: function(model){
+		this.create(model);
 	}
 });
 
 
-},{"../model/comment":5,"backbone":13}],3:[function(require,module,exports){
+},{"../model/comment":5,"backbone":15}],3:[function(require,module,exports){
 var backbone = require('backbone');
 var Router = require('./router');
 var router = new Router();
 router.startApp();
-},{"./router":6,"backbone":13}],4:[function(require,module,exports){
+},{"./router":6,"backbone":15}],4:[function(require,module,exports){
 var Backbone= require('backbone');
 var CommentCollection = require('../collection/comments');
 
@@ -43,18 +46,10 @@ module.exports =  Backbone.Model.extend({
         this.comments = new CommentCollection([], {
             "article": this
         });
-    },
-
-    getTitle: function() {
-        return this.get('title');
-    },
-
-    getContent: function() {
-        return this.get('content');
     }
 });
 
-},{"../collection/comments":2,"backbone":13}],5:[function(require,module,exports){
+},{"../collection/comments":2,"backbone":15}],5:[function(require,module,exports){
 var Backbone = require('backbone');
 module.exports =  Backbone.Model.extend({
 	defaults:{
@@ -63,43 +58,24 @@ module.exports =  Backbone.Model.extend({
 	url: function(){
 		return "http://blogmv-api.appspot.com/api/articles/"+this.get("articleId")+"/comments/";
 	},
-	getAuthorName: function() {
-		return this.get('author_name');
-	},
-
-	getAuthorEmail: function() {
-		return this.get('author_email');
-	},
-	setArticleId:function(id){
-		this.set("articleId",id);
-	},
-	getContent: function() {
-		return this.get('content');
-	},
 	setContent:function(key, value){
 		this.set(key,value);
 	},
-	postComment:function() {
-		var forceValidation = true
-		if (this.isValid(forceValidation)){			
-			this.save();
-		}
-	},
 	validate: function(attributes){
- 		if (attributes.name === ""){
+ 		if (this.attributes.author_name === undefined || this.attributes.author_name === ""){
 	      return 'Name is required';
 	  	}
 
-		if (attributes.email === ""){
+		if (this.attributes.author_email === undefined || this.attributes.author_email === ""){
 	      return 'Every person must have a name.';
 	  	}
 	}
 });
-},{"backbone":13}],6:[function(require,module,exports){
+},{"backbone":15}],6:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ = require('jquery');
 var ActiveModel = require('./model/article');
-var App = require('./view/mainView');
+var MainView = require('./view/mainView');
 var ArticleContent = require('./view/articleContent');
 var ArticleComment = require('./view/articleComment');
 var ArticleCollection = require('./collection/articles');
@@ -112,8 +88,8 @@ module.exports = Backbone.Router.extend({
 	renderHome: function() {     
 		activeModel = new ActiveModel();
 		articleCollection = new ArticleCollection();
-		app = new App({el : $(".main"), model : activeModel, collection: articleCollection});
-		appContent = new ArticleContent({el : $(".main"), model : activeModel});
+		mainView = new MainView({el : $(".main"), model : activeModel, collection: articleCollection});
+		appContent = new ArticleContent({el : $("#articleContent"), model : activeModel});
 		appComment = new ArticleComment({el : $(".discussion"), model : activeModel});
 
 	},
@@ -122,59 +98,57 @@ module.exports = Backbone.Router.extend({
 		Backbone.history.start();
 	}
 });
-},{"./collection/articles":1,"./model/article":4,"./view/articleComment":7,"./view/articleContent":8,"./view/mainView":9,"backbone":13,"jquery":21}],7:[function(require,module,exports){
+},{"./collection/articles":1,"./model/article":4,"./view/articleComment":7,"./view/articleContent":8,"./view/mainView":9,"backbone":15,"jquery":23}],7:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
 var PostComment= require('./postComment');
+var Template = require("./templates/commentsList.hbs")
 
 module.exports = Backbone.View.extend({
-	template: _.template( $('#tmp-article-comments').html() ),
 	initialize: function (options) {
 		this.activeModel = options.model;
 		this.el = options.el;
+		this.setupListeners();
+	},
+	setupListeners:function () {
 		this.listenTo(this.activeModel, 'change', this.fetchComments);
-		
+		this.listenTo(this.activeModel.comments, 'sync', this.render);
+		this.listenTo(this.activeModel.comments, 'add', this.render);
 	},
 	fetchComments: function(){
-		this.activeModel.comments.once('sync', this.render, this);
-		this.activeModel.comments.fetch();
+        this.activeModel.comments.fetch({reset:true});
 	},
 	render: function() {
-		this.$el.html(this.template({
-			'collection' : this.activeModel.comments
-		}));
+		this.$el.html(Template({
+            'comments' : this.activeModel.comments.toJSON()
+        }));
 		this.renderPostContent();
 	},
 	renderPostContent:function(){
-		
-		var postComment = new PostComment({el : $("#comments"), articleID : this.model.get("id")});
+		var postComment = new PostComment({el : $("#comments"), articleId : this.activeModel.get('id'), collection : this.activeModel.comments});
 	}
 });
 
 
-},{"./postComment":10,"backbone":13,"jquery":21,"underscore":22}],8:[function(require,module,exports){
+},{"./postComment":10,"./templates/commentsList.hbs":14,"backbone":15,"jquery":23,"underscore":24}],8:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
+var Template =  require("./templates/article.hbs");
 
 module.exports = Backbone.View.extend({
-	template: _.template( $('#tmp-article-content').html()),
 	
 	initialize: function (options) {
 		this.el = options.el;
 		this.activeModel = options.model;
 		this.listenTo(this.activeModel, 'change', this.render);
 	},
-
 	render: function() {
-		this.$el.find('article').html(this.template({
-			'activeModel' : this.activeModel
-		}));
+		this.$el.html(Template(this.activeModel.toJSON()));
 	}
-	
 });
-},{"backbone":13,"jquery":21,"underscore":22}],9:[function(require,module,exports){
+},{"./templates/article.hbs":11,"backbone":15,"jquery":23,"underscore":24}],9:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ = require('jquery');
 var _ = require('underscore');
@@ -211,13 +185,12 @@ module.exports = Backbone.View.extend({
         this.activeModel.set(index);
     }
 });
-},{"./templates/articleList.hbs":11,"backbone":13,"jquery":21,"underscore":22}],10:[function(require,module,exports){
+},{"./templates/articleList.hbs":12,"backbone":15,"jquery":23,"underscore":24}],10:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
 var CommentModel = require("../model/comment");
 var Template = require("./templates/commentForm.hbs");
-
 
 module.exports = Backbone.View.extend({
 	
@@ -228,27 +201,34 @@ module.exports = Backbone.View.extend({
 	},
 	initialize: function (options) {
 		this.el = options.el;
-		this.model = new CommentModel();
-		this.setArticleId(options.articleID);
+		this.collection = options.collection;
+		this.model = new CommentModel({"articleId": options.articleId});
 		this.render();
 	},
 	render: function() {
 		this.$el.html(Template());
 	},
-	setArticleId:function(id) {
-		this.model.setArticleId(id);
-	},
 	updateModel:function(e){
 		this.model.setContent(e.target.name, e.target.value);
 	},
-	postComment:function(){
-		this.model.postComment();
+	postComment:function(e){
+		e.preventDefault();
+		this.collection.postNewComment(this.model);
 	}
 });
-},{"../model/comment":5,"./templates/commentForm.hbs":12,"backbone":13,"jquery":21,"underscore":22}],11:[function(require,module,exports){
+},{"../model/comment":5,"./templates/commentForm.hbs":13,"backbone":15,"jquery":23,"underscore":24}],11:[function(require,module,exports){
+var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  return "<h2>"
+    + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
+    + "</h2>\n<p>"
+    + escapeExpression(((helper = (helper = helpers.content || (depth0 != null ? depth0.content : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"content","hash":{},"data":data}) : helper)))
+    + "</p>\n";
+},"useData":true});
+},{"handlebars/runtime":22}],12:[function(require,module,exports){
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"1":function(depth0,helpers,partials,data) {
   var helper, lambda=this.lambda, escapeExpression=this.escapeExpression, functionType="function", helperMissing=helpers.helperMissing;
-  return "	<li>\n	    <a href=\"article/"
+  return "	<li>\n	    <a href=\"#article/"
     + escapeExpression(lambda((depth0 != null ? depth0.id : depth0), depth0))
     + "\" class=\"list-group-item\">\n	        "
     + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
@@ -259,11 +239,25 @@ var templater = require("handlebars/runtime")["default"].template;module.exports
   if (stack1 != null) { buffer += stack1; }
   return buffer;
 },"useData":true});
-},{"handlebars/runtime":20}],12:[function(require,module,exports){
+},{"handlebars/runtime":22}],13:[function(require,module,exports){
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "    <div class=\"col-md-12\">\n        <h3>Write a comment</h3>\n        <span class=\"col-md-6\">\n            <input type=\"text\" name=\"author_name\" class=\"form-control input-lg\" placeholder=\"Name\">\n        </span>\n\n        <span class=\"col-md-6\">\n            <input type=\"email\" name=\"author_email\" class=\"form-control input-lg\" placeholder=\"Email\">\n        </span>\n\n        <span class=\"col-md-12\">\n            <textarea id=\"msg\" name=\"content\" class=\"form-control input-lg\" placeholder=\"Comment\"></textarea>\n            <button class=\"btn btn-lg btn-alert btn-block\" id=\"postComment\" type=\"submit\">Post comment</button>\n        </span>\n        \n    </div>    \n";
+  return "    <div class=\"col-md-12\">\n        <h3>Write a comment</h3>\n        <form role=\"form\">\n        <span class=\"col-md-6\">\n            <input type=\"text\" name=\"author_name\" class=\"form-control input-lg\" placeholder=\"Name\">\n        </span>\n\n        <span class=\"col-md-6\">\n            <input type=\"email\" name=\"author_email\" class=\"form-control input-lg\" placeholder=\"Email\">\n        </span>\n\n        <span class=\"col-md-12\">\n            <textarea id=\"msg\" name=\"content\" class=\"form-control input-lg\" placeholder=\"Comment\"></textarea>\n            <button class=\"btn btn-lg btn-alert btn-block\" id=\"postComment\" type=\"submit\">Post comment</button>\n        </span>\n        </form>\n        \n    </div>    \n";
   },"useData":true});
-},{"handlebars/runtime":20}],13:[function(require,module,exports){
+},{"handlebars/runtime":22}],14:[function(require,module,exports){
+var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"1":function(depth0,helpers,partials,data) {
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  return "	<li>\n	    <b>"
+    + escapeExpression(((helper = (helper = helpers.author_name || (depth0 != null ? depth0.author_name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"author_name","hash":{},"data":data}) : helper)))
+    + "</b>\n	    <p>"
+    + escapeExpression(((helper = (helper = helpers.content || (depth0 != null ? depth0.content : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"content","hash":{},"data":data}) : helper)))
+    + "</p>\n	</li>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, buffer = " <!-- script type=\"text/html\" id=\"tmp-article-comments\"> -->\n";
+  stack1 = helpers.each.call(depth0, (depth0 != null ? depth0.comments : depth0), {"name":"each","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer;
+},"useData":true});
+},{"handlebars/runtime":22}],15:[function(require,module,exports){
 //     Backbone.js 1.1.2
 
 //     (c) 2010-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -1873,7 +1867,7 @@ var templater = require("handlebars/runtime")["default"].template;module.exports
 
 }));
 
-},{"underscore":22}],14:[function(require,module,exports){
+},{"underscore":24}],16:[function(require,module,exports){
 "use strict";
 /*globals Handlebars: true */
 var base = require("./handlebars/base");
@@ -1909,7 +1903,7 @@ Handlebars.create = create;
 Handlebars['default'] = Handlebars;
 
 exports["default"] = Handlebars;
-},{"./handlebars/base":15,"./handlebars/exception":16,"./handlebars/runtime":17,"./handlebars/safe-string":18,"./handlebars/utils":19}],15:[function(require,module,exports){
+},{"./handlebars/base":17,"./handlebars/exception":18,"./handlebars/runtime":19,"./handlebars/safe-string":20,"./handlebars/utils":21}],17:[function(require,module,exports){
 "use strict";
 var Utils = require("./utils");
 var Exception = require("./exception")["default"];
@@ -2141,7 +2135,7 @@ var createFrame = function(object) {
   return frame;
 };
 exports.createFrame = createFrame;
-},{"./exception":16,"./utils":19}],16:[function(require,module,exports){
+},{"./exception":18,"./utils":21}],18:[function(require,module,exports){
 "use strict";
 
 var errorProps = ['description', 'fileName', 'lineNumber', 'message', 'name', 'number', 'stack'];
@@ -2170,7 +2164,7 @@ function Exception(message, node) {
 Exception.prototype = new Error();
 
 exports["default"] = Exception;
-},{}],17:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 "use strict";
 var Utils = require("./utils");
 var Exception = require("./exception")["default"];
@@ -2364,7 +2358,7 @@ exports.noop = noop;function initData(context, data) {
   }
   return data;
 }
-},{"./base":15,"./exception":16,"./utils":19}],18:[function(require,module,exports){
+},{"./base":17,"./exception":18,"./utils":21}],20:[function(require,module,exports){
 "use strict";
 // Build out our basic SafeString type
 function SafeString(string) {
@@ -2376,7 +2370,7 @@ SafeString.prototype.toString = function() {
 };
 
 exports["default"] = SafeString;
-},{}],19:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 "use strict";
 /*jshint -W004 */
 var SafeString = require("./safe-string")["default"];
@@ -2465,12 +2459,12 @@ exports.isEmpty = isEmpty;function appendContextPath(contextPath, id) {
 }
 
 exports.appendContextPath = appendContextPath;
-},{"./safe-string":18}],20:[function(require,module,exports){
+},{"./safe-string":20}],22:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime');
 
-},{"./dist/cjs/handlebars.runtime":14}],21:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":16}],23:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.1
  * http://jquery.com/
@@ -11662,7 +11656,7 @@ return jQuery;
 
 }));
 
-},{}],22:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 //     Underscore.js 1.7.0
 //     http://underscorejs.org
 //     (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors

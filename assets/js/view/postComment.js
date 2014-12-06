@@ -4,7 +4,6 @@ var $ = require('jquery');
 var CommentModel = require("../model/comment");
 var Template = require("./templates/commentForm.hbs");
 
-
 module.exports = Backbone.View.extend({
 	
 	events:{
@@ -14,20 +13,18 @@ module.exports = Backbone.View.extend({
 	},
 	initialize: function (options) {
 		this.el = options.el;
-		this.model = new CommentModel();
-		this.setArticleId(options.articleID);
+		this.collection = options.collection;
+		this.model = new CommentModel({"articleId": options.articleId});
 		this.render();
 	},
 	render: function() {
 		this.$el.html(Template());
 	},
-	setArticleId:function(id) {
-		this.model.setArticleId(id);
-	},
 	updateModel:function(e){
 		this.model.setContent(e.target.name, e.target.value);
 	},
-	postComment:function(){
-		this.model.postComment();
+	postComment:function(e){
+		e.preventDefault();
+		this.collection.postNewComment(this.model);
 	}
 });

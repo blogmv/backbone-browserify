@@ -9,6 +9,9 @@ module.exports =  Backbone.Collection.extend({
 	},
 	initialize: function(models, options){
 		this.article = options.article
+	},
+	postNewComment: function(model){
+		this.create(model);
 	}
 });
 
