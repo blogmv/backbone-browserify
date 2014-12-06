@@ -4,7 +4,6 @@ module.exports =  Backbone.Model.extend({
 		this.set(key,value);
 	},
 	validate: function(attributes){
-		debugger;
  		if (this.attributes.author_name === undefined || this.attributes.author_name === ""){
 	      return 'Name is required';
 	  	}

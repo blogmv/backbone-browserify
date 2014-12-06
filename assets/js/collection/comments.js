@@ -11,7 +11,6 @@ module.exports =  Backbone.Collection.extend({
 		this.article = options.article
 	},
 	postNewComment: function(model){
-		debugger;
 		this.create(model);
 	}
 });
