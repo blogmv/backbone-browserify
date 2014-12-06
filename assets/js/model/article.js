@@ -1,5 +1,5 @@
-var Backbone= require('backbone');
-var CommentCollection = require('../collection/comments');
+var Backbone= require('backbone'),
+	CommentCollection = require('../collection/comments');
 
 
 module.exports =  Backbone.Model.extend({

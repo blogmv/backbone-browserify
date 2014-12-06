@@ -1,15 +1,10 @@
 var Backbone = require('backbone');
 module.exports =  Backbone.Model.extend({
-	defaults:{
-		articleId:''
-	},
-	url: function(){
-		return "http://blogmv-api.appspot.com/api/articles/"+this.get("articleId")+"/comments/";
-	},
 	setContent:function(key, value){
 		this.set(key,value);
 	},
 	validate: function(attributes){
+		debugger;
  		if (this.attributes.author_name === undefined || this.attributes.author_name === ""){
 	      return 'Name is required';
 	  	}

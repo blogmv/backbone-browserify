@@ -1,8 +1,7 @@
-var Backbone = require('backbone');
-var _ = require('underscore');
-var $ = require('jquery');
-var CommentModel = require("../model/comment");
-var Template = require("./templates/commentForm.hbs");
+var Backbone = require('backbone'),
+	 $ = require('jquery'),
+	 CommentModel = require("../model/comment"),
+	 Template = require("./templates/commentForm.hbs");
 
 module.exports = Backbone.View.extend({
 	
