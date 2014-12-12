@@ -7,5 +7,8 @@ module.exports =  Backbone.Model.extend({
         this.comments = new CommentCollection([], {
             "article": this
         });
+    },
+    getComments:function () {
+    	this.comments.fetch({reset:true});
     }
 });

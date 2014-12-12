@@ -45,6 +45,9 @@ module.exports =  Backbone.Model.extend({
         this.comments = new CommentCollection([], {
             "article": this
         });
+    },
+    getComments:function () {
+    	this.comments.fetch({reset:true});
     }
 });
 
@@ -126,7 +129,7 @@ module.exports = Backbone.View.extend({
 		this.listenTo(this.activeModel.comments, 'sync', this.render);
 	},
 	fetchComments: function(){
-        this.activeModel.comments.fetch({reset:true});
+        this.activeModel.getComments();
 	},
 	render: function() {
 		this.$el.html(Template({
